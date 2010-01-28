@@ -1,0 +1,38 @@
+#include "graphtypes.h"
+
+main(argc,argv)
+int argc;
+char *argv[];
+
+{
+	Graph graph;
+	int *Mate;
+	int i,size;
+	/*Used to find the cost of the matching*/
+	int c = 0;
+	Edge e;
+
+	if (argc < 2){
+		printf("Usage: wmatch datafile\n");
+		exit(1);
+	}
+	graph = ReadGraph(&size,argv[1]);
+	Mate = Weighted_Match(graph,1);
+
+	for (i=1; i<=size; i++)
+	  {
+	    /*add the cost of edge i->Mate[i] only once*/
+	    if(i < Mate[i])
+	      {
+		/*find Mate[i] on i adj_list*/
+		for(e = graph[i].adj_list; e != NULL && e->endpoint != Mate[i]; e = e->nextedge);
+		/*if e == NULL then the program is wrong.*/
+		if(e != NULL)
+		  c += e->label;
+	      }
+	    printf("%d %d\n",i,Mate[i]);
+	  }
+	printf("\n%d\n",c);
+}
+
+
